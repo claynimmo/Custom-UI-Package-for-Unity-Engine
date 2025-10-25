@@ -5,7 +5,7 @@
 
 The package relies on the TextMeshPro asset for the text objects in the prefabs. Some versions of Unity will automatically import the TMPro package.
 
-The new input system must be installed and enabled in the project for the inventory management script. It also requires an InputActions named PlayerInput. A sample of the input actions is supplied in case you do not have one.
+The new input system must be installed and enabled in the project for the inventory management script.
 
 ## Usage
 

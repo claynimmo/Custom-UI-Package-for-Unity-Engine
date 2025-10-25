@@ -6,9 +6,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 //this script requires a new input system named PlayerInputs, with the controls UI.OpenMenu and UI.CloseMenu
-public class InventoryMenuManager : MonoBehaviour
-{
-    public PlayerInputs playerControls;
+public class InventoryMenuManager : MonoBehaviour {
+    public UIInputs playerControls;
     private InputAction openMenu;
     private InputAction cycleInventory;
 
@@ -37,12 +36,12 @@ public class InventoryMenuManager : MonoBehaviour
 
 
 
-    private void Awake(){
-        playerControls = new PlayerInputs();
+    private void Awake() {
+        playerControls = new();
     }
 
-    private void OnEnable(){
-        openMenu = playerControls.Player.OpenMenu;
+    private void OnEnable() {
+        openMenu = playerControls.UI.OpenMenu;
         openMenu.Enable();
         openMenu.performed += OpenMenu;
 
@@ -57,7 +56,7 @@ public class InventoryMenuManager : MonoBehaviour
         playerControls.UI.Navigate.performed += OnNavigate;
     }
 
-    private void OnDisable(){
+    private void OnDisable() {
         openMenu.performed -= OpenMenu;
         openMenu.Disable();
         cycleInventory.performed -= CycleInventoryInput;
@@ -69,54 +68,53 @@ public class InventoryMenuManager : MonoBehaviour
     }
 
 
-    private void OnSubmit(InputAction.CallbackContext context){
-        if(!menuOpened){return;}
+    private void OnSubmit(InputAction.CallbackContext context) {
+        if(!menuOpened) { return; }
         GameObject currentSelected = EventSystem.current.currentSelectedGameObject;
-        if (currentSelected != null && currentSelected.GetComponent<IPointerClickHandler>() != null)
-        {
-            source.PlayOneShot(submitClip,volume * SettingsData.Volume);
+        if(currentSelected != null && currentSelected.GetComponent<IPointerClickHandler>() != null) {
+            source.PlayOneShot(submitClip, volume * SettingsData.Volume);
         }
-    } 
+    }
 
-    private void OnNavigate(InputAction.CallbackContext context){
-        if(!menuOpened){return;}
-        if (context.phase == InputActionPhase.Performed) { 
-            StartCoroutine(CheckSelectedAfterDelay()); 
+    private void OnNavigate(InputAction.CallbackContext context) {
+        if(!menuOpened) { return; }
+        if(context.phase == InputActionPhase.Performed) {
+            StartCoroutine(CheckSelectedAfterDelay());
         }
-        
-    } 
-    private IEnumerator CheckSelectedAfterDelay()
-    {
+
+    }
+    private IEnumerator CheckSelectedAfterDelay() {
         yield return null; // Wait for the next frame
         GameObject currentSelected = EventSystem.current.currentSelectedGameObject;
-        if(currentSelected != lastSelected && currentSelected != null){
-            source.PlayOneShot(navigateClip,volume * SettingsData.Volume);
+        if(currentSelected != lastSelected && currentSelected != null) {
+            source.PlayOneShot(navigateClip, volume * SettingsData.Volume);
         }
         lastSelected = currentSelected;
     }
 
-    private void OpenMenu(InputAction.CallbackContext context){
-        if(menuOpened){
+    private void OpenMenu(InputAction.CallbackContext context) {
+        if(menuOpened) {
             CloseMenu();
-        return;}
+            return;
+        }
 
         menuOpened = true;
         currentMenu = 0;
         menuFull.SetActive(true);
-        menuTabs[currentMenu].OpenMenu(); 
+        menuTabs[currentMenu].OpenMenu();
         tabVisuals[currentMenu].color = tabActiveCol;
 
         //add code to disable movement controls
     }
 
-    public void OpenSpecialMenu(){
+    public void OpenSpecialMenu() {
         menuOpened = true;
     }
 
 
-    public void CloseMenu(){
+    public void CloseMenu() {
 
-        foreach(MenuTab tab in specialTabs){
+        foreach(MenuTab tab in specialTabs) {
             tab.CloseMenu();
         }
         menuTabs[currentMenu].CloseMenu();
@@ -127,27 +125,27 @@ public class InventoryMenuManager : MonoBehaviour
         menuOpened = false;
 
         //add code to enable movement controls
-    } 
+    }
 
-    private void CycleInventoryInput(InputAction.CallbackContext context){
-        if(!menuOpened){return;}
+    private void CycleInventoryInput(InputAction.CallbackContext context) {
+        if(!menuOpened) { return; }
         int axisValue = (int)context.ReadValue<float>();
 
-        if(axisValue == 0){return;}
-        source.PlayOneShot(tabClip,volume * SettingsData.Volume);
+        if(axisValue == 0) { return; }
+        source.PlayOneShot(tabClip, volume * SettingsData.Volume);
         CycleInventory(axisValue);
     }
 
 
-    private void CycleInventory(int val){
+    private void CycleInventory(int val) {
         menuTabs[currentMenu].CloseMenu();
         tabVisuals[currentMenu].color = tabDefaultCol;
 
         currentMenu = currentMenu + val;
-        if(currentMenu >= menuTabs.Length){
+        if(currentMenu >= menuTabs.Length) {
             currentMenu = 0;
         }
-        else if(currentMenu < 0){
+        else if(currentMenu < 0) {
             currentMenu = menuTabs.Length - 1;
         }
 
