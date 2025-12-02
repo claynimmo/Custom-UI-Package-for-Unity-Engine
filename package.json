@@ -1,0 +1,12 @@
+{
+  "name": "com.clay.ui",
+  "version": "1.0.0",
+  "displayName": "UI Package",
+  "description": "Scripts and prefabs for creating dynamic user interfaces",
+  "unity": "2022.3",
+  "author": {
+    "name": "Clay",
+    "email": "nimmo.clay@gmail.com",
+    "url": "https://github.com/claynimmo"
+  }
+}
